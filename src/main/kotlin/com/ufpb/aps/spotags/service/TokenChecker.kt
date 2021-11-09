@@ -27,14 +27,10 @@ class TokenChecker(
 
     @Scheduled(fixedRate = 100000L)
     fun checkToken() {
-
-        when(!ACCESS_TOKEN.isNullOrBlank()) {
-            true -> {
-                EXPIRES_IN -= 100
-
-                if(EXPIRES_IN <= 100)
-                    refreshAccessToken()
-            }
+        ACCESS_TOKEN?.let {
+            EXPIRES_IN -= 100
+            if(EXPIRES_IN <= 100)
+                refreshAccessToken()
         }
     }
 
@@ -50,6 +46,7 @@ class TokenChecker(
             ACCESS_TOKEN = tokenResponse!!.accessToken
             EXPIRES_IN = tokenResponse.expiresIn
             AUTHORIZED = true
+
         } catch(e: Exception) {
             ACCESS_TOKEN = null
             AUTHORIZED = false
