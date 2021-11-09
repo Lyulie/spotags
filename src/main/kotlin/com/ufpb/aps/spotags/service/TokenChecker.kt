@@ -23,14 +23,13 @@ class TokenChecker(
 
     val log = Logger.getLogger(TokenChecker::class.java)
 
-    val client: WebClient = WebClient.create()
-
     @Scheduled(fixedRate = 100000L)
     fun checkToken() {
         ACCESS_TOKEN?.let {
-            EXPIRES_IN -= 100
-            if(EXPIRES_IN <= 100)
-                refreshAccessToken()
+            when(EXPIRES_IN <= 100) {
+                true -> refreshAccessToken()
+                false -> EXPIRES_IN -= 100
+            }
         }
     }
 
